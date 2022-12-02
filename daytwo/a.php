@@ -58,4 +58,6 @@ class GameRules {
 
 $test_data = file_get_contents("input.txt");
 $game_rules = new GameRules();
-echo $game_rules -> totalScores($test_data, $game_rules);
+$total = $game_rules -> totalScores($test_data, $game_rules);
+
+echo check($total, 14163);
