@@ -9,38 +9,13 @@ class GameRules {
             $Z = "win",
             $X = "lose",
             $Y = "draw";
-    private $predertimed_results;
 
-    public function __construct()
-    {
-        $rock_score = 1;
-        $paper_score = 2;
-        $scissors_score = 3;
-        $win_score = 6;
-        $loss_score = 0;
-        $draw_score = 3;
-
-        $this -> predertimed_results = [
-            //You throw Rock
-            'rock' => [// I want to...
-                'win' => $paper_score + $win_score, // Rock covered by Paper
-                'lose' => $scissors_score + $loss_score, // Rock blunts scissors
-                'draw' => $rock_score + $draw_score, // Draw
-            ],
-            //You throw Paper
-            'paper' => [// I want to...
-                'win' => $scissors_score + $win_score, // Paper cut by scissors
-                'lose' => $rock_score + $loss_score, // Paper covers rock
-                'draw' => $paper_score + $draw_score, // Draw
-            ],
-            //You throw Scissors
-            'scissors' => [// I want to...
-                'win' => $rock_score + $win_score, // Scissors blunted by rock
-                'lose' => $paper_score + $loss_score, // Scissors cuts paper
-                'draw' => $scissors_score + $draw_score, // Draw],
-            ]
-        ];
-    }
+    private $rock_score = 1,
+            $paper_score = 2,
+            $scissors_score = 3,
+            $win_score = 6,
+            $loss_score = 0,
+            $draw_score = 3;
 
     public function totalScores($input, $_this) {
         return array_reduce(explode("\n", $input), static function($running_total, $game_result) use ($_this) {
@@ -49,11 +24,23 @@ class GameRules {
     }
 
     private function calculateScore($game_result) {
-        $result = explode(" ", $game_result);
-        $you = $this -> {$result[0]};
-        $me = $this -> {$result[1]};
+        return $this -> predeterminedResults(
+            sprintf("%s|%s", $this -> {$game_result[0]}, $this -> {$game_result[2]})
+        );
+    }
 
-        return $this -> predertimed_results[$you][$me];
+    private function predeterminedResults($result) {
+        return match($result) {
+            'rock|win'      => $this -> paper_score     + $this -> win_score, // Rock covered by Paper
+            'rock|lose'     => $this -> scissors_score  + $this -> loss_score, // Rock blunts scissors
+            'rock|draw'     => $this -> rock_score      + $this -> draw_score, // Draw
+            'paper|win'     => $this -> scissors_score  + $this -> win_score, // Paper cut by scissors
+            'paper|lose'    => $this -> rock_score      + $this -> loss_score, // Paper covers rock
+            'paper|draw'    => $this -> paper_score     + $this -> draw_score, // Draw
+            'scissors|win'  => $this -> rock_score      + $this -> win_score, // Scissors blunted by rock
+            'scissors|lose' => $this -> paper_score     + $this -> loss_score, // Scissors cuts paper
+            'scissors|draw' => $this -> scissors_score  + $this -> draw_score, // Draw,
+        };
     }
 }
 
