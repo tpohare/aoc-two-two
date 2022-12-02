@@ -31,14 +31,14 @@ class GameRules {
 
     private function scores($result) {
         return match($result) {
-            'rock|rock'         => $this -> rock_score      + $this -> draw_score, // Rock covered by Paper
+            'rock|rock'         => $this -> rock_score      + $this -> draw_score, // Draw
             'rock|paper'        => $this -> paper_score     + $this -> win_score, // Paper covers rock
-            'rock|scissors'     => $this -> scissors_score  + $this -> loss_score, // Rock blunts scissors
-            'paper|rock'        => $this -> rock_score      + $this -> loss_score, // Paper covers rock
+            'rock|scissors'     => $this -> scissors_score  + $this -> loss_score, // Scissors blunted by rock
+            'paper|rock'        => $this -> rock_score      + $this -> loss_score, // Rock covered by paper
             'paper|paper'       => $this -> paper_score     + $this -> draw_score, // Draw
             'paper|scissors'    => $this -> scissors_score  + $this -> win_score, // Scissors cuts paper
-            'scissors|rock'     => $this -> rock_score      + $this -> win_score, // Paper covers rock
-            'scissors|paper'    => $this -> paper_score     + $this -> loss_score, // Scissors cuts paper
+            'scissors|rock'     => $this -> rock_score      + $this -> win_score, // Rocks blunts scissors
+            'scissors|paper'    => $this -> paper_score     + $this -> loss_score, // Paper cut but scissor
             'scissors|scissors' => $this -> scissors_score  + $this -> draw_score, // Draw],
         };
     }
