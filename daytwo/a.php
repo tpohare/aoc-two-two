@@ -2,50 +2,30 @@
 
 require_once "../functions.php";
 
-class GameRules {
-    private $A = "rock",
-            $B = "paper",
-            $C = "scissors",
-            $X = "rock",
-            $Y = "paper",
-            $Z = "scissors";
-
-    private $rock_score = 1,
-            $paper_score = 2,
-            $scissors_score = 3,
-            $win_score = 6,
-            $loss_score = 0,
-            $draw_score = 3;
-
-    public function totalScores($input, $_this) {
-        return array_reduce(explode("\n", $input), static function($running_total, $game_result) use ($_this) {
-            return $running_total + $_this -> calculateScore($game_result);
-        });
-    }
-
-    private function calculateScore($game_result) {
-        return $this -> scores(
-            sprintf("%s|%s", $this -> {$game_result[0]}, $this -> {$game_result[2]})
-        );
-    }
-
-    private function scores($result) {
-        return match($result) {
-            'rock|rock'         => $this -> rock_score      + $this -> draw_score, // Draw
-            'rock|paper'        => $this -> paper_score     + $this -> win_score, // Paper covers rock
-            'rock|scissors'     => $this -> scissors_score  + $this -> loss_score, // Scissors blunted by rock
-            'paper|rock'        => $this -> rock_score      + $this -> loss_score, // Rock covered by paper
-            'paper|paper'       => $this -> paper_score     + $this -> draw_score, // Draw
-            'paper|scissors'    => $this -> scissors_score  + $this -> win_score, // Scissors cuts paper
-            'scissors|rock'     => $this -> rock_score      + $this -> win_score, // Rocks blunts scissors
-            'scissors|paper'    => $this -> paper_score     + $this -> loss_score, // Paper cut but scissor
-            'scissors|scissors' => $this -> scissors_score  + $this -> draw_score, // Draw],
+function totalScores($input) {
+    return array_reduce($input, static function($running_total, $game_result) {
+        return $running_total + match($game_result) {
+            //X = 1 Points
+            //Y = 2 Points
+            //Z = 3 Points
+            //Win = 6 Points
+            //Draw = 3 Points
+            //Loss = 0 Points
+            // Them vs You
+            'A X' => 4, // Rock vs Rock = Draw.
+            'A Y' => 8, // Rock vs Paper = Win. Paper covers Rock.
+            'A Z' => 3, // Rock vs Scissors = Loss. Rock blunts Scissors.
+            'B X' => 1, // Paper vs Rock. Loss. Paper covers Rock.
+            'B Y' => 5, // Paper vs Paper = Draw.
+            'B Z' => 9, // Paper vs Scissors = Win. Scissors cuts Paper.
+            'C X' => 7, // Scissors vs Rock = Win. Rock blunts Scissors.
+            'C Y' => 2, // Scissors vs Paper = Loss. Scissors cuts Paper.
+            'C Z' => 6, // Scissors vs Scissors = Draw.
         };
-    }
+    });
 }
 
-$test_data = file_get_contents("input.txt");
-$game_rules = new GameRules();
-$total = $game_rules -> totalScores($test_data, $game_rules);
+$test_data = explode("\n", file_get_contents("input.txt")); ;
+$total = totalScores($test_data);
 
 echo check($total, 14163);
